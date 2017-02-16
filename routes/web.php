@@ -26,4 +26,5 @@ Route::group(['middleware' => 'auth', 'prefix' => 'words'], function(){
     Route::get('/learn', 'WordController@learn');
     Route::get('/get', 'WordController@getWords');
     Route::post('/post', 'WordController@post');
+    Route::get('/destroy/{id}', 'WordController@destroy');
 });

@@ -11,12 +11,21 @@
                             <li>{{$error}}</li>
                         @endforeach
                     @endif
+                    @if($message)
+                        <div class="alert  alert-{{$message['type']}}">
+                            {{$message['msg']}}
+                        </div>
+                    @endif
                     <div class="panel-body">
-                        <ul>
+                        <table class="table">
                         @foreach ($words as $word)
-                            <li>{{$word->word}} - {{$word->translation}}</li>
+                            <tr>
+                                <td>{{$word->word}}</td>
+                                <td>{{$word->translation}}</td>
+                                <td><a href="/words/destroy/{{$word->id}}">Delete</a></td>
+                            </tr>
                         @endforeach
-                        </ul>
+                        </table>
                     </div>
                 </div>
             </div>

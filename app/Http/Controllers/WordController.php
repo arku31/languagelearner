@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Word;
+use Illuminate\Contracts\Session\Session;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use League\Flysystem\Exception;
 
 class WordController extends Controller
 {
@@ -12,10 +15,11 @@ class WordController extends Controller
     {
         return view('word.create');
     }
-    public function index()
+    public function index(Request $request)
     {
         $words = Word::all();
         $data['words'] = $words;
+        $data['message'] = $request->session()->get('message');
         return view('word.index', $data);
     }
 
@@ -41,6 +45,36 @@ class WordController extends Controller
     {
         return Word::orderBy('practiced')
             ->get();
+    }
+
+    public function destroy($id, Request $request)
+    {
+        try {
+            $word = Word::findOrFail($id);
+            if ($word->user_id == Auth::id()) {
+                $word->delete();
+                $request->session()->flash('message',
+                    [
+                        'type' => 'success',
+                        'msg' => 'Successefully deleted'
+                    ]);
+            } else {
+                $request->session()->flash('message',  [
+                    'type' => 'danger',
+                    'msg' => 'No access'
+                ]);
+            }
+        } catch (ModelNotFoundException $e) {
+            $request->session()->flash('message',  [
+                'type' => 'danger',
+                'msg' => 'Word Not found'
+            ]);
+        }
+
+
+        return redirect()->back();
+
+
     }
 
     public function post(Request $request)

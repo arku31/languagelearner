@@ -76,9 +76,8 @@
                         _token: $('input[name=_token]').val(),
                         word_id: word.id
                     }
-                }).done(function(){
-                    that.skip();
                 });
+                that.skip();
 
             },
             skip() {
