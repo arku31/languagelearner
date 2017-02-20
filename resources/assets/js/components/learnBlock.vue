@@ -1,35 +1,28 @@
 <template>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Current words</div>
-                    <div class="panel-body">
-                        <div class="alert-danger" v-if="showend">
-                            Слов больше нет
-                        </div>
+    <div>
+        <div class="panel-body">
+            <div class="alert-danger" v-if="showend">
+                Слов больше нет
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="words-list" v-if="words.length > 0 && !showend">
+                <h1>Word: {{words[index].word}}</h1>
+                <h3 v-if="showword">Help: {{words[index].translation}}</h3>
+                Translation: <input type="text"
+                                    class="input-group input-lg"
+                                    v-on:keyup.enter="more()"
+                                    v-model="words[index].mytranslation">
+                <div class="result">
+                    <div v-if="isEqual()">
+                        Yeah, correct
+                        <button v-on:click="more()" class="btn-default btn">
+                            Next
+                        </button>
                     </div>
-                    <div class="panel-body">
-                        <div class="words-list" v-if="words.length > 0 && !showend">
-                            <h1>Word: {{words[index].word}}</h1>
-                            <h3 v-if="showword">Help: {{words[index].translation}}</h3>
-                            Translation: <input type="text"
-                                            class="input-group input-lg"
-                                                v-on:keyup.enter="more()"
-                                            v-model="words[index].mytranslation">
-                            <div class="result">
-                                <div v-if="isEqual()">
-                                    Yeah, correct
-                                    <button v-on:click="more()" class="btn-default btn">
-                                        Next
-                                    </button>
-                                </div>
-                                <div v-else>
-                                    <button v-on:click="skip()" class="btn-danger btn">Skip</button>
-                                    <button v-on:click="show()" class="btn btn-success">Show word</button>
-                                </div>
-                            </div>
-                        </div>
+                    <div v-else>
+                        <button v-on:click="skip()" class="btn-danger btn">Skip</button>
+                        <button v-on:click="show()" class="btn btn-success">Show word</button>
                     </div>
                 </div>
             </div>

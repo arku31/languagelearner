@@ -25,7 +25,7 @@ class WordController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request,[
+        $this->validate($request, [
            'word' => 'unique:words'
         ]);
         Word::create([
@@ -38,7 +38,8 @@ class WordController extends Controller
 
     public function learn()
     {
-        return view('word.learn');
+        $data['levelData'] = $this->calcLevel();
+        return view('word.learn', $data);
     }
 
     public function getWords()
@@ -53,19 +54,18 @@ class WordController extends Controller
             $word = Word::findOrFail($id);
             if ($word->user_id == Auth::id()) {
                 $word->delete();
-                $request->session()->flash('message',
-                    [
+                $request->session()->flash('message', [
                         'type' => 'success',
                         'msg' => 'Successefully deleted'
                     ]);
             } else {
-                $request->session()->flash('message',  [
+                $request->session()->flash('message', [
                     'type' => 'danger',
                     'msg' => 'No access'
                 ]);
             }
         } catch (ModelNotFoundException $e) {
-            $request->session()->flash('message',  [
+            $request->session()->flash('message', [
                 'type' => 'danger',
                 'msg' => 'Word Not found'
             ]);
@@ -84,5 +84,32 @@ class WordController extends Controller
         $word->practiced++;
         $word->save();
         return [];
+    }
+
+    public function calcLevel()
+    {
+        $current = Word::where('practiced', '>', 5)->count();
+        $levels = $this->getLevels();
+        foreach ($levels as $level => $cnt) {
+            if ($current > $cnt) {
+                $data['level'] = $level;
+                $data['next'] = next($levels);
+            }
+        }
+        $data['current'] = $current;
+
+        return $data;
+    }
+
+    public function getLevels()
+    {
+        return [
+            'A0' => 0,
+            'A1' => 1000,
+            'A2' => 2000,
+            'B1' => 3500,
+            'B2' => 5000,
+            'C1' => 6500
+        ];
     }
 }
