@@ -45,6 +45,7 @@ class WordController extends Controller
     public function getWords()
     {
         return Word::orderBy('practiced')
+            ->where('user_id', Auth::id())
             ->get();
     }
 
