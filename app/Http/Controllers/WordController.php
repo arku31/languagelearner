@@ -17,7 +17,7 @@ class WordController extends Controller
     }
     public function index(Request $request)
     {
-        $words = Word::all();
+        $words = Word::where('user_id', Auth::id())->get();
         $data['words'] = $words;
         $data['message'] = $request->session()->get('message');
         return view('word.index', $data);
