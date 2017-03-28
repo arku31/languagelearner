@@ -25,9 +25,6 @@ class WordController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request, [
-           'word' => 'unique:words'
-        ]);
         Word::create([
             'word' => $request->input('word'),
             'translation' => strtolower($request->input('translation')),
@@ -89,7 +86,9 @@ class WordController extends Controller
 
     public function calcLevel()
     {
-        $current = Word::where('practiced', '>', 5)->count();
+        $current = Word::where('practiced', '>', 5)
+            ->where('user_id', Auth::id())
+            ->count();
         $levels = $this->getLevels();
         foreach ($levels as $level => $cnt) {
             if ($current > $cnt) {
