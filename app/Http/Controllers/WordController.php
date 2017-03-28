@@ -90,6 +90,8 @@ class WordController extends Controller
             ->where('user_id', Auth::id())
             ->count();
         $levels = $this->getLevels();
+        $data['level'] = key($levels);
+        $data['next'] = next($levels);
         foreach ($levels as $level => $cnt) {
             if ($current > $cnt) {
                 $data['level'] = $level;
