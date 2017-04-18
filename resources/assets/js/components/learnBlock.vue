@@ -49,7 +49,8 @@
                 words: [],
                 index: 0,
                 showend: false,
-                showword: false
+                showword: false,
+                ignore_answer: false
             }
         },
         methods: {
@@ -62,18 +63,21 @@
                     console.log(word.translation + ' nq ' + word.mytranslation);
                     return false;
                 }
-                $.ajax({
+                if (this.ignore_answer === false) {
+                  $.ajax({
                     url: '/words/post',
                     method: 'post',
                     data: {
-                        _token: $('input[name=_token]').val(),
-                        word_id: word.id
+                      _token: $('input[name=_token]').val(),
+                      word_id: word.id
                     }
-                });
+                  });
+                }
                 that.skip();
 
             },
             skip() {
+                this.ignore_answer = false;
                 if (this.words.length > (this.index+1)) {
                     this.index++
                 } else {
@@ -86,6 +90,7 @@
             },
             show() {
                 this.showword = true;
+                this.ignore_answer = true;
                 let that = this;
                 setTimeout(function(){
                     that.showword = false;
